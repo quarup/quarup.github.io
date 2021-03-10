@@ -45,23 +45,47 @@
 				mesh = new THREE.Mesh( geometry, material );
 
 				scene.add( mesh );
+				const loader = new THREE.TextureLoader();
 
-				const loader = new BasisTextureLoader();
-				loader.setTranscoderPath( 'js/libs/basis/' );
-				loader.detectSupport( renderer );
-				loader.load( 'textures/compressed/canestra_di_frutta_caravaggio.basis', function ( texture ) {
+				// load a resource
+				loader.load(
+					// resource URL
+					'textures/land_ocean_ice_cloud_2048.jpg',
 
-					texture.encoding = THREE.sRGBEncoding;
-					material.map = texture;
-					material.needsUpdate = true;
+					// onLoad callback
+					function ( texture ) {
+						// in this example we create the material when the texture is loaded
+						const material = new THREE.MeshBasicMaterial( {
+							map: texture
+						 } );
+					},
 
-					render();
+					// onProgress callback currently not supported
+					undefined,
 
-				}, undefined, function ( error ) {
+					// onError callback
+					function ( err ) {
+						console.error( 'An error happened.' );
+					}
+				);
 
-					console.error( error );
 
-				} );
+				// const loader = new BasisTextureLoader();
+				// loader.setTranscoderPath( 'js/libs/basis/' );
+				// loader.detectSupport( renderer );
+				// loader.load( 'textures/compressed/canestra_di_frutta_caravaggio.basis', function ( texture ) {
+
+				// 	texture.encoding = THREE.sRGBEncoding;
+				// 	material.map = texture;
+				// 	material.needsUpdate = true;
+
+				// 	render();
+
+				// }, undefined, function ( error ) {
+
+				// 	console.error( error );
+
+				// } );
 
 				window.addEventListener( 'resize', onWindowResize );
 
