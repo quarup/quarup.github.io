@@ -125,21 +125,6 @@
 
 			}
 
-			/** Correct UVs to be compatible with `flipY=false` textures. */
-			function flipY( geometry ) {
-
-				const uv = geometry.attributes.uv;
-
-				for ( let i = 0; i < uv.count; i ++ ) {
-
-					uv.setY( i, 1 - uv.getY( i ) );
-
-				}
-
-				return geometry;
-
-			}
-
 		</script>
 
 	</body>
