@@ -41,7 +41,7 @@
 				controls.addEventListener( 'change', render );
 
 				const geometry = new THREE.PlaneGeometry(640/903, 1);
-				pxGeometry.rotateX( Math.PI / 2 );
+				geometry.rotateX( Math.PI / 2 );
 				const material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide } );
 
 				mesh = new THREE.Mesh( geometry, material );
