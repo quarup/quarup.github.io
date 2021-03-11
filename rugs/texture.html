@@ -40,7 +40,7 @@
 				const controls = new OrbitControls( camera, renderer.domElement );
 				controls.addEventListener( 'change', render );
 
-				const geometry = new THREE.PlaneBufferGeometry();
+				const geometry = new THREE.PlaneGeometry(1, 640/903);
 				const material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide } );
 
 				mesh = new THREE.Mesh( geometry, material );
