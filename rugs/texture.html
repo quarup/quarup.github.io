@@ -54,10 +54,14 @@
 
 					// onLoad callback
 					function ( texture ) {
-						// in this example we create the material when the texture is loaded
-						const material = new THREE.MeshBasicMaterial( {
-							map: texture
-						 } );
+						// // in this example we create the material when the texture is loaded
+						// const material = new THREE.MeshBasicMaterial( {
+						// 	map: texture
+						//  } );
+						material.map = texture;
+						material.needsUpdate = true;
+
+						render();
 					},
 
 					// onProgress callback currently not supported
