@@ -62,6 +62,14 @@
 						material.needsUpdate = true;
 
 						render();
+
+						const exporter = new GLTFExporter();
+
+						// Parse the input and generate the glTF output
+						exporter.parse( mesh, function ( gltf ) {
+							console.log( gltf );
+							//downloadJSON( gltf );
+						}, {}} );
 					},
 
 					// onProgress callback currently not supported
