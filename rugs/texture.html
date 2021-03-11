@@ -69,7 +69,8 @@
 
 						// Parse the input and generate the glTF output
 						exporter.parse( mesh, function ( gltf ) {
-							console.log( gltf );
+							const output = JSON.stringify( result, null, 2 );
+							console.log( output );
 							//downloadJSON( gltf );
 						}, options );
 					},
