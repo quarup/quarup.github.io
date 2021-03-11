@@ -68,6 +68,7 @@
 						const options = {};
 
 						// Parse the input and generate the glTF output
+						// See https://threejs.org/examples/#misc_exporter_gltf
 						exporter.parse( mesh, function ( gltf ) {
 							const output = JSON.stringify( result, null, 2 );
 							console.log( output );
