@@ -34,13 +34,13 @@
 				scene = new THREE.Scene();
 
 				camera = new THREE.PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 0.1, 100 );
-				camera.position.set( 0, 1, 0 );
+				camera.position.set( 0, 2, 0 );
 				camera.lookAt( scene.position );
 
 				const controls = new OrbitControls( camera, renderer.domElement );
 				controls.addEventListener( 'change', render );
 
-				const geometry = new THREE.PlaneGeometry(640/903, 1);
+				const geometry = new THREE.PlaneGeometry(1.40, 2.00);
 				geometry.rotateX( Math.PI / 2 );
 				const material = new THREE.MeshBasicMaterial( { side: THREE.DoubleSide } );
 
