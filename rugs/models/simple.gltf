@@ -108,7 +108,7 @@
       ],
       "alphaMode": "OPAQUE",
       "alphaCutoff": 0.5,
-      "doubleSided": true
+      "doubleSided": false
     }
   ],
   "meshes": [
