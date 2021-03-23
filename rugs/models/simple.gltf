@@ -8,14 +8,14 @@
       "count": 4,
       "type": "VEC3",
       "max": [
-        1.0,
+        0.699999988079071,
         0.0,
-        0.699999988079071
+        1.0
       ],
       "min": [
-        -1.0,
+        -0.699999988079071,
         0.0,
-        -0.699999988079071
+        -1.0
       ]
     },
     {
@@ -75,7 +75,7 @@
   ],
   "buffers": [
     {
-      "uri": "data:application/octet-stream;base64,AACAvwAAAAAzMzM/AACAvwAAAAAzMzO/AACAPwAAAAAzMzO/AACAPwAAAAAzMzM/AAAAAAAAgD8AAAAAAAAAAAAAgD8AAAAAAACAPwAAgD8AAQICAwA=",
+      "uri": "data:application/octet-stream;base64,MzMzPwAAAAAAAIA/MzMzPwAAAAAAAIC/MzMzvwAAAAAAAIC/MzMzvwAAAAAAAIA/AACAPwAAgD8AAIA/AAAAAAAAAAAAAAAAAAAAAAAAgD8AAQICAwA=",
       "byteLength": 86
     }
   ],
@@ -108,7 +108,7 @@
       ],
       "alphaMode": "OPAQUE",
       "alphaCutoff": 0.5,
-      "doubleSided": false
+      "doubleSided": true
     }
   ],
   "meshes": [

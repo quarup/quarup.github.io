@@ -7,32 +7,30 @@ from pygltflib.validator import validate, summary
 
 class Rug:
 	"""Rug data."""
-	def __init__(self, id: str, width_m: float, height_m: float):
+	def __init__(self, id: str, length_m: float, width_m: float):
 		self.id = id
 		self.points = np.array(
 		    [
-		        [-width_m / 2, 0, +height_m / 2],
-		        [-width_m / 2, 0, -height_m / 2],
-		        [+width_m / 2, 0, -height_m / 2],
-		        [+width_m / 2, 0, +height_m / 2],
+		        [+width_m / 2, 0, +length_m / 2],
+		        [+width_m / 2, 0, -length_m / 2],
+		        [-width_m / 2, 0, -length_m / 2],
+		        [-width_m / 2, 0, +length_m / 2],
 		    ],
 		    dtype="float32",
 		)
 		self.points_blob = self.points.tobytes()
 		self.texture_coords = np.array(
 			[
-				[0, 1],
-				[0, 0],
-				[1, 0],
 				[1, 1],
+				[1, 0],
+				[0, 0],
+				[0, 1],
 			],
 		    dtype="float32",
 		)
 		self.texture_coords_blob = self.texture_coords.flatten().tobytes()
 		self.triangles = np.array(
 		    [
-		        # [2, 1, 0],
-		        # [0, 3, 2],
 		        [0, 1, 2],
 		        [2, 3, 0],
 		    ],
