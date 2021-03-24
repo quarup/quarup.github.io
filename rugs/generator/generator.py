@@ -3,11 +3,14 @@ import pygltflib
 from pygltflib import GLTF2, BufferFormat
 from pygltflib.utils import ImageFormat, Image, Texture
 from pygltflib.validator import validate, summary
-
+import argparse
+import csv
+import os
 
 class Rug:
 	"""Rug data."""
-	def __init__(self, id: str, length_m: float, width_m: float):
+	def __init__(self, id: str, length_m: float, width_m: float, input_images: str):
+		self.input_images = input_images
 		self.id = id
 		self.points = np.array(
 		    [
@@ -38,102 +41,148 @@ class Rug:
 		)
 		self.triangles_blob = self.triangles.flatten().tobytes()
 
-rug = Rug('abc', 2.00, 1.40)
-gltf = pygltflib.GLTF2(
-    scene=0,
-    scenes=[pygltflib.Scene(nodes=[0])],
-    nodes=[pygltflib.Node(mesh=0)],
-    meshes=[
-        pygltflib.Mesh(
-            primitives=[
-                pygltflib.Primitive(
-                    attributes=pygltflib.Attributes(
-                    	POSITION=0,
-                    	TEXCOORD_0=1),
-                    indices=2,
-                    material=0
-                )
-            ]
-        )
-    ],
-    accessors=[
-        # Points of the rug rectangle.
-        pygltflib.Accessor(
-            bufferView=0,
-            componentType=pygltflib.FLOAT,
-            count=len(rug.points),
-            type=pygltflib.VEC3,
-            max=rug.points.max(axis=0).tolist(),
-            min=rug.points.min(axis=0).tolist(),
-        ),
-        # Texture coordinates
-        pygltflib.Accessor(
-            bufferView=1,
-            componentType=pygltflib.FLOAT,
-            count=len(rug.texture_coords),
-            type=pygltflib.VEC2,
-            max=rug.texture_coords.max(axis=0).tolist(),
-            min=rug.texture_coords.min(axis=0).tolist(),
-        ),
-        # Triangle indices. We keep these at the end because unsigned bytes may not result in a length multiple of 4 bytes.
-        pygltflib.Accessor(
-            bufferView=2,
-            componentType=pygltflib.UNSIGNED_BYTE,
-            count=rug.triangles.size,
-            type=pygltflib.SCALAR,
-            max=[int(rug.triangles.max())],
-            min=[int(rug.triangles.min())],
-        ),
-    ],
-    bufferViews=[
-        # Points of the rug rectangle.
-        pygltflib.BufferView(
-            buffer=0,
-            byteOffset=0,
-            byteLength=len(rug.points_blob),
-            target=pygltflib.ARRAY_BUFFER,
-        ),
-        # Texture coordinates
-        pygltflib.BufferView(
-            buffer=0,
-            byteOffset=len(rug.points_blob),
-            byteLength=len(rug.texture_coords_blob),
-            target=pygltflib.ARRAY_BUFFER,
-        ),
-        # Triangle indices. We keep these at the end because unsigned bytes may not result in a length multiple of 4 bytes.
-        pygltflib.BufferView(
-            buffer=0,
-            byteOffset=len(rug.points_blob) + len(rug.texture_coords_blob),
-            byteLength=len(rug.triangles_blob),
-            target=pygltflib.ELEMENT_ARRAY_BUFFER,
-        ),
-    ],
-    buffers=[
-        pygltflib.Buffer(
-            byteLength=len(rug.points_blob) + len(rug.texture_coords_blob) + len(rug.triangles_blob)
-        )
-    ],
-    images=[pygltflib.Image(uri="../models/rug.png")],
-    textures=[pygltflib.Texture(source=0)],
-    materials=[pygltflib.Material(
-        pbrMetallicRoughness=pygltflib.PbrMetallicRoughness(
-            metallicFactor=0,
-        	roughnessFactor=0.9,
-        	baseColorTexture=pygltflib.TextureInfo(index=0),
-      	),
-      	doubleSided=True,
-    )]
-)
+	def getImageFilename(self):
+		# Look for png first (because it supports transparency).
+		filename = "{}/{}.png".format(self.input_images, self.id)
+		if os.path.isfile(filename):
+			return filename
 
-gltf.convert_images(ImageFormat.DATAURI)
-gltf.set_binary_blob(rug.points_blob + rug.texture_coords_blob + rug.triangles_blob)
-gltf.convert_buffers(BufferFormat.DATAURI)  # convert buffer URIs to data.
+		# Fall back to jpg.
+		filename = "{}/{}.jpg".format(self.input_images, self.id)
+		if os.path.isfile(filename):
+			return filename
 
-summary(gltf)  # will pretty print human readable summary of errors
+		# File missing.
+		return None
+
+	def getGLTF(self):
+		gltf = pygltflib.GLTF2(
+		    scene=0,
+		    scenes=[pygltflib.Scene(nodes=[0])],
+		    nodes=[pygltflib.Node(mesh=0)],
+		    meshes=[
+		        pygltflib.Mesh(
+		            primitives=[
+		                pygltflib.Primitive(
+		                    attributes=pygltflib.Attributes(
+		                    	POSITION=0,
+		                    	TEXCOORD_0=1),
+		                    indices=2,
+		                    material=0
+		                )
+		            ]
+		        )
+		    ],
+		    accessors=[
+		        # Points of the rug rectangle.
+		        pygltflib.Accessor(
+		            bufferView=0,
+		            componentType=pygltflib.FLOAT,
+		            count=len(self.points),
+		            type=pygltflib.VEC3,
+		            max=self.points.max(axis=0).tolist(),
+		            min=self.points.min(axis=0).tolist(),
+		        ),
+		        # Texture coordinates
+		        pygltflib.Accessor(
+		            bufferView=1,
+		            componentType=pygltflib.FLOAT,
+		            count=len(self.texture_coords),
+		            type=pygltflib.VEC2,
+		            max=self.texture_coords.max(axis=0).tolist(),
+		            min=self.texture_coords.min(axis=0).tolist(),
+		        ),
+		        # Triangle indices. We keep these at the end because unsigned bytes may not result in a length multiple of 4 bytes.
+		        pygltflib.Accessor(
+		            bufferView=2,
+		            componentType=pygltflib.UNSIGNED_BYTE,
+		            count=self.triangles.size,
+		            type=pygltflib.SCALAR,
+		            max=[int(self.triangles.max())],
+		            min=[int(self.triangles.min())],
+		        ),
+		    ],
+		    bufferViews=[
+		        # Points of the rug rectangle.
+		        pygltflib.BufferView(
+		            buffer=0,
+		            byteOffset=0,
+		            byteLength=len(self.points_blob),
+		            target=pygltflib.ARRAY_BUFFER,
+		        ),
+		        # Texture coordinates
+		        pygltflib.BufferView(
+		            buffer=0,
+		            byteOffset=len(self.points_blob),
+		            byteLength=len(self.texture_coords_blob),
+		            target=pygltflib.ARRAY_BUFFER,
+		        ),
+		        # Triangle indices. We keep these at the end because unsigned bytes may not result in a length multiple of 4 bytes.
+		        pygltflib.BufferView(
+		            buffer=0,
+		            byteOffset=len(self.points_blob) + len(self.texture_coords_blob),
+		            byteLength=len(self.triangles_blob),
+		            target=pygltflib.ELEMENT_ARRAY_BUFFER,
+		        ),
+		    ],
+		    buffers=[
+		        pygltflib.Buffer(
+		            byteLength=len(self.points_blob) + len(self.texture_coords_blob) + len(self.triangles_blob)
+		        )
+		    ],
+		    images=[pygltflib.Image(uri=self.getImageFilename())],
+		    textures=[pygltflib.Texture(source=0)],
+		    materials=[pygltflib.Material(
+		        pbrMetallicRoughness=pygltflib.PbrMetallicRoughness(
+		            metallicFactor=0,
+		        	roughnessFactor=0.9,
+		        	baseColorTexture=pygltflib.TextureInfo(index=0),
+		      	),
+		      	doubleSided=True,
+		    )]
+		)
+
+		gltf.convert_images(ImageFormat.DATAURI)
+		gltf.set_binary_blob(self.points_blob + self.texture_coords_blob + self.triangles_blob)
+		gltf.convert_buffers(BufferFormat.DATAURI)  # convert buffer URIs to data.
+
+		return gltf
 
 
+class Generator:
+	def __init__(self, args):
+		self.args = args
+
+	def generate(self):
+		with open(self.args.input_csv, newline='') as csvfile:
+		    reader = csv.DictReader(csvfile)
+		    for row in reader:
+		        rug = Rug(row['ID'], float(row['L cm']) / 100, float(row['W cm']) / 100, self.args.input_images)
+		        if rug.getImageFilename() is not None:
+			        gltf = rug.getGLTF()
+			        gltf.save("{}/{}.gltf".format(self.args.output_models, rug.id))
+		        else:
+			        print("WARNING: Skipping rug without image file. Rug ID={}".format(rug.id))
+
+def main():
+    parser = argparse.ArgumentParser(description='Create a ArcHydro schema')
+    parser.add_argument('--input_csv', metavar='path', required=True,
+                        help='Path to input CSV file')
+    parser.add_argument('--input_images', metavar='path', required=True,
+                        help='Path to input images directory')
+    parser.add_argument('--output_models', metavar='path', required=True,
+                        help='Path to output models directory')
+    Generator(parser.parse_args()).generate()
+
+
+    #rug = Rug('abc', 2.00, 1.40)
 #glb = b"".join(gltf.save_to_bytes())  # save_to_bytes returns an array of the components of a glb
 
 #gltf_reloaded = pygltflib.GLTF2.load_from_bytes(glb)
 
-gltf.save("../models/simple.gltf")
+# 		summary(gltf)  # will pretty print human readable summary of errors
+# gltf.save("../models/simple.gltf")
+
+
+if __name__ == "__main__":
+    main()
