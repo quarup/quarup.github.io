@@ -1,14 +1,20 @@
 <!-- Import the component -->
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
-    <div align="center">
-        <select name="value" onChange="this.form.submit()">
-            <option value="900012">900012</option><br />
-            <option value="900047">900047</option><br />
-            <option value="900765">900765</option><br />
-        </select>
-        <input type="submit" name="submit" value="Submit">
-    </div>
+<script>
+function updateAr() {
+    document.getElementById("ar_element").src = "models/" + document.getElementById("dropDown").value + ".gltf";
+}
+</script>
+
+<div align="center">
+    <select id="dropDown" onChange="updateAr()">
+        <option value="900012">900012</option><br />
+        <option value="900047">900047</option><br />
+        <option value="900765">900765</option><br />
+    </select>
+    <input type="submit" name="submit" value="Submit">
+</div>
 
 
 <model-viewer id="ar_element" src="models/900012.gltf" camera-controls shadow-intensity="1" ar-modes="webxr scene-viewer quick-look" ar style="width:100%; height:100%">
