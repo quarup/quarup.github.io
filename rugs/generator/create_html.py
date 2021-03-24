@@ -1,6 +1,29 @@
 import argparse
 from os import listdir
-from os.path import isfile, join
+from os.path import join
+
+_PREAMBLE = """
+<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+
+<script>
+function updateAr() {
+    document.getElementById("ar_element").src = "models/" + document.getElementById("dropDown").value + ".gltf";
+}
+</script>
+
+<div align="center">
+	Rug:
+    <select id="dropDown" onChange="updateAr()">
+"""
+
+_POSTAMBLE = """
+    </select>
+</div>
+
+
+<model-viewer id="ar_element" src="models/{}.gltf" camera-controls shadow-intensity="1" ar-modes="webxr scene-viewer quick-look" ar style="width:100%; height:100%">
+</model-viewer>
+"""
 
 def main():
     parser = argparse.ArgumentParser(description='Create a ArcHydro schema')
@@ -10,10 +33,20 @@ def main():
                         help='Path to the output HTML file')
     args = parser.parse_args()
 
-    onlyfiles = [f for f in listdir(args.input_models) if join(args.input_models, f).endswith('.gltf')]
-    print(onlyfiles)
+    model_ids = [f.removesuffix('.gltf') for f in listdir(args.input_models) if join(args.input_models, f).endswith('.gltf')]
+    if len(model_ids) < 1:
+    	print("ERROR: could not find any GLTF files in {}".format(args.input_models))
+    	return
 
+    select_lines = ["""<option value="{}">{}</option><br />\n""".format(f, f) for f in model_ids]
 
+    with open(args.output_html, "w") as file1:
+        # Writing data to a file
+        file1.write(_PREAMBLE)
+        file1.writelines(select_lines)
+        file1.write(_POSTAMBLE.format(model_ids[0]))
+
+    print("Wrote {} models to {}".format(len(model_ids), args.output_html))
 
 if __name__ == "__main__":
     main()
