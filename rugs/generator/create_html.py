@@ -1,3 +1,4 @@
+import argparse
 from os import listdir
 from os.path import isfile, join
 
@@ -7,9 +8,10 @@ def main():
                         help='Path to models directory')
     parser.add_argument('--output_html', metavar='path', required=True,
                         help='Path to the output HTML file')
+    args = parser.parse_args()
 
-	onlyfiles = [f for f in listdir(mypath) if join(mypath, f).endswith('.gltf')]
-	print(onlyfiles)
+    onlyfiles = [f for f in listdir(args.input_models) if join(args.input_models, f).endswith('.gltf')]
+    print(onlyfiles)
 
 
 
