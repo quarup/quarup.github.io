@@ -12,9 +12,9 @@ function updateAr() {
 }
 </script>
 
-<div align="center">
-	Rug:
-    <select id="dropDown" onChange="updateAr()">
+<div align="center" style="font-size: larger;">
+    Rug:
+    <select id="dropDown" onChange="updateAr()" style="font-size: larger;">
 """
 
 _POSTAMBLE = """
@@ -31,7 +31,7 @@ _POSTAMBLE = """
     ar-modes="scene-viewer webxr quick-look"
     ar
     ar-scale="auto"
-    style="width:100%; height:100%">
+    style="width:100vw height:100vh">
 </model-viewer>
 """
 
