@@ -12,27 +12,32 @@ function updateAr() {
 }
 </script>
 
-<div align="center" style="font-size: larger;">
-    Rug:
-    <select id="dropDown" onChange="updateAr()" style="font-size: larger;">
+<div style="width:100%; height:100%">
+    <div align="center" style="font-size: larger;">
+        Rug:
+        <select id="dropDown" onChange="updateAr()" style="font-size: larger;">
 """
 
+_SELECT_LINE = """
+            <option value="{}">{}</option><br />"""
+
 _POSTAMBLE = """
-    </select>
+        </select>
+    </div>
+
+
+    <model-viewer
+        id="ar_element"
+        src="models/900773.gltf"
+        ios-src="models/900773.usdz"
+        camera-controls
+        shadow-intensity="1"
+        ar-modes="scene-viewer webxr quick-look"
+        ar
+        ar-scale="auto"
+        style="width:100%; height:100%">
+    </model-viewer>
 </div>
-
-
-<model-viewer
-    id="ar_element"
-    src="models/{}.gltf"
-    ios-src="models/{}.usdz"
-    camera-controls
-    shadow-intensity="1"
-    ar-modes="scene-viewer webxr quick-look"
-    ar
-    ar-scale="auto"
-    style="width:100vw height:100vh">
-</model-viewer>
 """
 
 def main():
@@ -48,7 +53,7 @@ def main():
     	print("ERROR: could not find any GLTF files in {}".format(args.input_models))
     	return
 
-    select_lines = ["""<option value="{}">{}</option><br />\n""".format(f, f) for f in model_ids]
+    select_lines = [_SELECT_LINE.format(f, f) for f in model_ids]
 
     with open(args.output_html, "w") as file1:
         # Writing data to a file
