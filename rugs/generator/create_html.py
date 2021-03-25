@@ -8,6 +8,7 @@ _PREAMBLE = """
 <script>
 function updateAr() {
     document.getElementById("ar_element").src = "models/" + document.getElementById("dropDown").value + ".gltf";
+    document.getElementById("ar_element").iosSrc = "models/" + document.getElementById("dropDown").value + ".usdz";
 }
 </script>
 
@@ -21,7 +22,16 @@ _POSTAMBLE = """
 </div>
 
 
-<model-viewer id="ar_element" src="models/{}.gltf" camera-controls shadow-intensity="1" ar-modes="webxr scene-viewer quick-look" ar style="width:100%; height:100%">
+<model-viewer
+    id="ar_element"
+    src="models/{}.gltf"
+    ios-src="models/{}.usdz"
+    camera-controls
+    shadow-intensity="1"
+    ar-modes="scene-viewer webxr quick-look"
+    ar
+    ar-scale="auto"
+    style="width:100%; height:100%">
 </model-viewer>
 """
 
@@ -44,7 +54,7 @@ def main():
         # Writing data to a file
         file1.write(_PREAMBLE)
         file1.writelines(select_lines)
-        file1.write(_POSTAMBLE.format(model_ids[0]))
+        file1.write(_POSTAMBLE.format(model_ids[0], model_ids[0]))
 
     print("Wrote {} models to {}".format(len(model_ids), args.output_html))
 
