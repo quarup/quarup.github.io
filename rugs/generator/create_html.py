@@ -2,42 +2,47 @@ import argparse
 from os import listdir
 from os.path import join
 
+
+_DEFAULT_RUG_ID = '982879'
+
 _PREAMBLE = """
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+<head>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
-<script>
-function updateAr() {
-    document.getElementById("ar_element").src = "models/" + document.getElementById("dropDown").value + ".gltf";
-    document.getElementById("ar_element").iosSrc = "models/" + document.getElementById("dropDown").value + ".usdz";
-}
-</script>
-
-<div style="width:100%; height:100%">
-    <div align="center" style="font-size: larger;">
-        Rug:
-        <select id="dropDown" onChange="updateAr()" style="font-size: larger;">
-"""
+    <script>
+    function updateAr() {
+        document.getElementById("ar_element").src = "models/" + document.getElementById("dropDown").value + ".gltf";
+        document.getElementById("ar_element").iosSrc = "models/" + document.getElementById("dropDown").value + ".usdz";
+    }
+    </script>
+</head>
+<body>
+    <div style="width:100%; height:100%">
+        <div align="center" style="font-size: larger;">
+            Rug:
+            <select id="dropDown" onChange="updateAr()" style="font-size: larger;">"""
 
 _SELECT_LINE = """
-            <option value="{}">{}</option><br />"""
+                <option value="{model_id}" {selected_str}>{model_id}</option><br />"""
 
 _POSTAMBLE = """
-        </select>
+            </select>
+        </div>
+
+
+        <model-viewer
+            id="ar_element"
+            src="models/{model_id}.gltf"
+            ios-src="models/{model_id}.usdz"
+            camera-controls
+            shadow-intensity="1"
+            ar-modes="scene-viewer webxr quick-look"
+            ar
+            ar-scale="auto"
+            style="width:100%; height:100%">
+        </model-viewer>
     </div>
-
-
-    <model-viewer
-        id="ar_element"
-        src="models/900773.gltf"
-        ios-src="models/900773.usdz"
-        camera-controls
-        shadow-intensity="1"
-        ar-modes="scene-viewer webxr quick-look"
-        ar
-        ar-scale="auto"
-        style="width:100%; height:100%">
-    </model-viewer>
-</div>
+</body>
 """
 
 def main():
@@ -53,13 +58,13 @@ def main():
     	print("ERROR: could not find any GLTF files in {}".format(args.input_models))
     	return
 
-    select_lines = [_SELECT_LINE.format(f, f) for f in model_ids]
+    select_lines = [_SELECT_LINE.format(model_id=f, selected_str=('selected' if f == _DEFAULT_RUG_ID else '')) for f in model_ids]
 
     with open(args.output_html, "w") as file1:
         # Writing data to a file
         file1.write(_PREAMBLE)
         file1.writelines(select_lines)
-        file1.write(_POSTAMBLE.format(model_ids[0], model_ids[0]))
+        file1.write(_POSTAMBLE.format(model_id=_DEFAULT_RUG_ID))
 
     print("Wrote {} models to {}".format(len(model_ids), args.output_html))
 

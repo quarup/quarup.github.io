@@ -138,6 +138,7 @@ class Rug:
 		        	roughnessFactor=0.9,
 		        	baseColorTexture=pygltflib.TextureInfo(index=0),
 		      	),
+		      	alphaMode=pygltflib.BLEND,
 		      	doubleSided=True,
 		    )]
 		)
