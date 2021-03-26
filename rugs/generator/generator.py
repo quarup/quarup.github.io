@@ -160,7 +160,11 @@ class Generator:
 		        rug = Rug(row['ID'], float(row['L cm']) / 100, float(row['W cm']) / 100, self.args.input_images)
 		        if rug.getImageFilename() is not None:
 			        gltf = rug.getGLTF()
-			        gltf.save("{}/{}.gltf".format(self.args.output_models, rug.id))
+			        if self.args.save_as_gltf:
+				        gltf.save("{}/{}.gltf".format(self.args.output_models, rug.id))
+			        else:
+				        gltf.convert_buffers(BufferFormat.BINARYBLOB)
+				        gltf.save_binary("{}/{}.glb".format(self.args.output_models, rug.id))
 		        else:
 			        print("WARNING: Skipping rug without image file. Rug ID={}".format(rug.id))
 
@@ -171,6 +175,8 @@ def main():
     parser.add_argument('--input_images', metavar='path', required=True,
                         help='Path to input images directory')
     parser.add_argument('--output_models', metavar='path', required=True,
+                        help='Path to output models directory')
+    parser.add_argument('--save_as_gltf', metavar='path', default=True,
                         help='Path to output models directory')
     Generator(parser.parse_args()).generate()
 
