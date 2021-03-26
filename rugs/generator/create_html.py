@@ -35,7 +35,6 @@ _POSTAMBLE = """
             src="models/{model_id}.gltf"
             ios-src="models/{model_id}.usdz"
             camera-controls
-            shadow-intensity="1"
             ar-modes="scene-viewer webxr quick-look"
             ar
             ar-scale="auto"
