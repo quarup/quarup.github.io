@@ -6,6 +6,7 @@ from pygltflib.validator import validate, summary
 import argparse
 import csv
 import os
+import shutil
 
 class Rug:
 	"""Rug data."""
@@ -41,7 +42,7 @@ class Rug:
 		)
 		self.triangles_blob = self.triangles.flatten().tobytes()
 
-	def getImageFilename(self):
+	def getImageOriginalFilename(self):
 		# Look for png first (because it supports transparency).
 		filename = "{}/{}.png".format(self.input_images, self.id)
 		if os.path.isfile(filename):
@@ -55,7 +56,11 @@ class Rug:
 		# File missing.
 		return None
 
-	def getGLTF(self):
+	def getImageLocalFilename(self):
+		original_filename = self.getImageOriginalFilename()
+		return os.path.basename(original_filename) if original_filename else None
+
+	def getGLTF(self, store_image_in_blob=False):
 		gltf = pygltflib.GLTF2(
 		    scene=0,
 		    scenes=[pygltflib.Scene(nodes=[0])],
@@ -130,7 +135,7 @@ class Rug:
 		            byteLength=len(self.points_blob) + len(self.texture_coords_blob) + len(self.triangles_blob)
 		        )
 		    ],
-		    images=[pygltflib.Image(uri=self.getImageFilename())],
+		    images=[pygltflib.Image(uri=self.getImageLocalFilename())],
 		    textures=[pygltflib.Texture(source=0)],
 		    materials=[pygltflib.Material(
 		        pbrMetallicRoughness=pygltflib.PbrMetallicRoughness(
@@ -138,12 +143,15 @@ class Rug:
 		        	roughnessFactor=0.9,
 		        	baseColorTexture=pygltflib.TextureInfo(index=0),
 		      	),
-		      	alphaMode=pygltflib.BLEND,
+		      	alphaMode=pygltflib.MASK,
+		      	alphaCutoff=0.1,
 		      	doubleSided=True,
 		    )]
 		)
 
-		gltf.convert_images(ImageFormat.DATAURI)
+		if store_image_in_blob:
+			gltf.convert_images(ImageFormat.DATAURI)
+
 		gltf.set_binary_blob(self.points_blob + self.texture_coords_blob + self.triangles_blob)
 		gltf.convert_buffers(BufferFormat.DATAURI)  # convert buffer URIs to data.
 
@@ -159,10 +167,13 @@ class Generator:
 		    reader = csv.DictReader(csvfile)
 		    for row in reader:
 		        rug = Rug(row['ID'], float(row['L cm']) / 100, float(row['W cm']) / 100, self.args.input_images)
-		        if rug.getImageFilename() is not None:
-			        gltf = rug.getGLTF()
-			        if self.args.save_as_gltf:
+		        if rug.getImageOriginalFilename() is not None:
+			        gltf = rug.getGLTF(store_image_in_blob=self.args.save_as_glb)
+			        if not self.args.save_as_glb:
 				        gltf.save("{}/{}.gltf".format(self.args.output_models, rug.id))
+				        shutil.copyfile(
+				        	rug.getImageOriginalFilename(),
+				        	os.path.join(self.args.output_models, rug.getImageLocalFilename()))
 			        else:
 				        gltf.convert_buffers(BufferFormat.BINARYBLOB)
 				        gltf.save_binary("{}/{}.glb".format(self.args.output_models, rug.id))
@@ -177,8 +188,8 @@ def main():
                         help='Path to input images directory')
     parser.add_argument('--output_models', metavar='path', required=True,
                         help='Path to output models directory')
-    parser.add_argument('--save_as_gltf', metavar='path', default=True,
-                        help='Path to output models directory')
+    parser.add_argument('--save_as_glb', metavar='path', default=False,
+                        help='Whether to save as a binary blob')
     Generator(parser.parse_args()).generate()
 
 
