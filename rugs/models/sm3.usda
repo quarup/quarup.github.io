@@ -1,0 +1,70 @@
+#usda 1.0
+(
+    customLayerData = {
+        string creator = "usdzconvert preview 0.62"
+    }
+    defaultPrim = "sm"
+    metersPerUnit = 1
+    upAxis = "Y"
+)
+
+def Xform "sm" (
+    assetInfo = {
+        string name = "sm"
+    }
+    kind = "component"
+)
+{
+    def Scope "Materials"
+    {
+        def Material "material_0"
+        {
+            token outputs:surface.connect = </sm/Materials/material_0/surfaceShader.outputs:surface>
+
+            def Shader "surfaceShader"
+            {
+                uniform token info:id = "UsdPreviewSurface"
+                color3f inputs:diffuseColor.connect = </sm/Materials/material_0/diffuseColor_opacity_texture.outputs:rgb>
+                float inputs:opacity.connect = </sm/Materials/material_0/diffuseColor_opacity_texture.outputs:a>
+                float inputs:opacityThreshold = 0.1
+                float inputs:roughness = 0.9
+                token outputs:surface
+            }
+
+            def Shader "uvReader_st"
+            {
+                uniform token info:id = "UsdPrimvarReader_float2"
+                token inputs:varname = "st"
+                float2 outputs:result
+            }
+
+            def Shader "diffuseColor_opacity_texture"
+            {
+                uniform token info:id = "UsdUVTexture"
+                asset inputs:file = "sm.png"
+                float2 inputs:st.connect = </sm/Materials/material_0/uvReader_st.outputs:result>
+                token inputs:wrapS = "repeat"
+                token inputs:wrapT = "repeat"
+                float outputs:a
+                float3 outputs:rgb
+            }
+        }
+    }
+
+    def Scope "Geom"
+    {
+        def Mesh "node_0"
+        {
+            uniform bool doubleSided = 1
+            int[] faceVertexCounts = [3, 3]
+            int[] faceVertexIndices = [0, 1, 2, 2, 3, 0]
+            rel material:binding = </sm/Materials/material_0>
+            point3f[] points = [(0.75, 0, 0.75), (0.75, 0, -0.75), (-0.75, 0, -0.75), (-0.75, 0, 0.75)]
+            texCoord2f[] primvars:st = [(1, 0), (1, 1), (0, 1), (0, 0)] (
+                interpolation = "vertex"
+            )
+            uniform token subdivisionScheme = "none"
+        }
+    }
+}
+
