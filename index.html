@@ -94,8 +94,6 @@
     .grid .card { margin: 0; display: flex; flex-direction: column; }
     .grid .card p { flex: 1; font-size: 0.95rem; }
     .grid h3 { font-size: 1.05rem; }
-    .grid h3 a { color: var(--ink); text-decoration: none; }
-    .grid h3 a:hover { color: var(--accent); }
     .meta-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
     .year { color: var(--muted); font-size: 0.85rem; }
     .note { color: var(--muted); font-size: 0.85rem; margin-top: 28px; }
@@ -124,8 +122,9 @@
 
   var USER = 'quarup';
   var SITE = 'https://quarup.github.io/';
-  // The site repo itself and the profile-README repo are not projects.
-  var EXCLUDE = { 'quarup.github.io': 1, 'quarup': 1 };
+  // The site repo itself and the profile-README repo are not projects;
+  // macos-utils and skiing are empty repos.
+  var EXCLUDE = { 'quarup.github.io': 1, 'quarup': 1, 'macos-utils': 1, 'skiing': 1 };
   // Demos not detectable via GitHub Pages (hosted inside this site).
   var DEMO_OVERRIDES = { 'augmented-reality-rugs': SITE + 'rugs/' };
   var PINNED_FIRST = ['gymi_fehlerwoerter'];
@@ -136,14 +135,12 @@
     'augmented-reality-rugs': 'Augmented Reality Rugs',
     'afterlife-ai': 'Afterlife AI',
     'photo-date-updater': 'Photo Date Updater',
-    'macos-utils': 'macOS Utils',
   };
   // Used when a repo has no description on GitHub.
   var DESCRIPTIONS = {
     'gymi_fehlerwoerter': 'German spelling trainer for Gymi prep (Swiss orthography): dictation with text-to-speech, Leitner flashcards, tricky word pairs, and profiles for multiple kids.',
     'chess_mind_ai': 'Prompt-configurable chess AI on top of Stockfish — describe a playing style in natural language ("aggressively use your queen") and play against it.',
     'photo-date-updater': 'macOS script that fixes photo file creation dates to match their EXIF dates.',
-    'macos-utils': 'Small macOS utility scripts.',
   };
   var LANG_DOTS = {
     JavaScript: '#f1e05a', Python: '#3572a5', Dart: '#00b4ab',
@@ -156,10 +153,8 @@
     { name: 'math_city', language: 'Dart', pushed_at: '2026-06-24', has_pages: false, description: 'Math Dash — Spin, solve, level up — free, open-source, no ads ever' },
     { name: 'chess_mind_ai', language: 'Python', pushed_at: '2026-06-06', has_pages: false, description: '' },
     { name: 'photo-date-updater', language: 'Python', pushed_at: '2025-08-06', has_pages: false, description: '' },
-    { name: 'macos-utils', language: '', pushed_at: '2025-08-06', has_pages: false, description: '' },
     { name: 'afterlife-ai', language: 'Jupyter Notebook', pushed_at: '2025-06-15', has_pages: false, description: "Voice chat bot that mimics someone's personality even after they're gone from this world. =P" },
     { name: 'augmented-reality-rugs', language: 'Python', pushed_at: '2023-10-22', has_pages: false, description: 'Generate and view augmented reality rugs in your house using a mobile device.' },
-    { name: 'skiing', language: '', pushed_at: '2019-01-07', has_pages: false, description: '' },
   ];
 
   function esc(s) {
@@ -220,10 +215,10 @@
         var desc = descOf(repo);
         othersHtml +=
           '<div class="card">' +
-          '<div class="meta-row"><h3><a href="' + esc(repoUrl) + '">' + esc(titleOf(repo)) + '</a></h3>' +
+          '<div class="meta-row"><h3>' + esc(titleOf(repo)) + '</h3>' +
           (year ? '<span class="year">' + esc(year) + '</span>' : '') + '</div>' +
           (desc ? '<p>' + esc(desc) + '</p>' : '<p></p>') +
-          '<div class="row">' + langHtml(repo) + '</div>' +
+          '<div class="row"><a class="src" href="' + esc(repoUrl) + '">Source</a>' + langHtml(repo) + '</div>' +
           '</div>';
       }
     });
