@@ -1,9 +1,251 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quarup · Projects</title>
+  <meta name="description" content="Public projects by Quarup — live demos and source code.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
+  <style>
+    :root {
+      color-scheme: light;
+      --page: #f9f9f7;
+      --surface: #fcfcfb;
+      --ink: #0b0b0b;
+      --ink-2: #52514e;
+      --muted: #898781;
+      --border: rgba(11, 11, 11, 0.10);
+      --accent: #2a78d6;
+      --accent-ink: #ffffff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+        --page: #0d0d0d;
+        --surface: #1a1a19;
+        --ink: #ffffff;
+        --ink-2: #c3c2b7;
+        --muted: #898781;
+        --border: rgba(255, 255, 255, 0.10);
+        --accent: #3987e5;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--page);
+      color: var(--ink);
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 17px;
+      line-height: 1.5;
+    }
+    main { max-width: 760px; margin: 0 auto; padding: 32px 16px 48px; }
+    header.hero { margin-bottom: 8px; }
+    h1 { margin: 0; font-size: 1.9rem; }
+    .sub { color: var(--ink-2); margin: 4px 0 0; }
+    .sub a { color: var(--accent); text-decoration: none; }
+    .sub a:hover { text-decoration: underline; }
+    h2 {
+      font-size: 1.05rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 32px 0 10px;
+    }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px 20px;
+      margin: 12px 0;
+    }
+    .card h3 { margin: 0 0 4px; font-size: 1.2rem; }
+    .card p { margin: 4px 0 10px; color: var(--ink-2); }
+    .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .btn {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--accent-ink);
+      text-decoration: none;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 10px;
+    }
+    .btn:active { transform: scale(0.98); }
+    .src {
+      color: var(--accent);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 7px 14px;
+      border-radius: 10px;
+    }
+    .src:hover { border-color: var(--accent); }
+    .lang { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+    .lang::before {
+      content: "";
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--dot, var(--muted));
+      margin-right: 5px;
+    }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
+    .grid .card { margin: 0; display: flex; flex-direction: column; }
+    .grid .card p { flex: 1; font-size: 0.95rem; }
+    .grid h3 { font-size: 1.05rem; }
+    .grid h3 a { color: var(--ink); text-decoration: none; }
+    .grid h3 a:hover { color: var(--accent); }
+    .meta-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+    .year { color: var(--muted); font-size: 0.85rem; }
+    .note { color: var(--muted); font-size: 0.85rem; margin-top: 28px; }
+    footer { color: var(--muted); font-size: 0.85rem; max-width: 760px; margin: 0 auto; padding: 0 16px 40px; }
+  </style>
+</head>
 <body>
-<h1>Rugs Augmented Reality</h1>
-<li><a href="https://github.com/quarup/augmented-reality-rugs">documentation and source code</a></li>
-<li><a href="rugs/">examples</a></li>
-<li><a href="rugsdev/">dev</a></li>
+<main>
+  <header class="hero">
+    <h1>Quarup</h1>
+    <p class="sub">Public projects &amp; live demos · <a href="https://github.com/quarup">github.com/quarup</a></p>
+  </header>
+
+  <h2>Live demos</h2>
+  <div id="demos"></div>
+
+  <h2>More projects</h2>
+  <div id="others" class="grid"></div>
+
+  <p class="note" id="note"></p>
+</main>
+
+<script>
+(function () {
+  'use strict';
+
+  var USER = 'quarup';
+  var SITE = 'https://quarup.github.io/';
+  // The site repo itself and the profile-README repo are not projects.
+  var EXCLUDE = { 'quarup.github.io': 1, 'quarup': 1 };
+  // Demos not detectable via GitHub Pages (hosted inside this site).
+  var DEMO_OVERRIDES = { 'augmented-reality-rugs': SITE + 'rugs/' };
+  var PINNED_FIRST = ['gymi_fehlerwoerter'];
+  var TITLES = {
+    'gymi_fehlerwoerter': 'Gymi Fehlerwörter',
+    'math_city': 'Math Dash',
+    'chess_mind_ai': 'ChessMind AI',
+    'augmented-reality-rugs': 'Augmented Reality Rugs',
+    'afterlife-ai': 'Afterlife AI',
+    'photo-date-updater': 'Photo Date Updater',
+    'macos-utils': 'macOS Utils',
+  };
+  // Used when a repo has no description on GitHub.
+  var DESCRIPTIONS = {
+    'gymi_fehlerwoerter': 'German spelling trainer for Gymi prep (Swiss orthography): dictation with text-to-speech, Leitner flashcards, tricky word pairs, and profiles for multiple kids.',
+    'chess_mind_ai': 'Prompt-configurable chess AI on top of Stockfish — describe a playing style in natural language ("aggressively use your queen") and play against it.',
+    'photo-date-updater': 'macOS script that fixes photo file creation dates to match their EXIF dates.',
+    'macos-utils': 'Small macOS utility scripts.',
+  };
+  var LANG_DOTS = {
+    JavaScript: '#f1e05a', Python: '#3572a5', Dart: '#00b4ab',
+    'Jupyter Notebook': '#da5b0b', HTML: '#e34c26', Swift: '#f05138',
+  };
+
+  // Snapshot fallback in case the GitHub API is unreachable or rate-limited.
+  var FALLBACK = [
+    { name: 'gymi_fehlerwoerter', language: 'JavaScript', pushed_at: '2026-08-02', has_pages: true, description: '' },
+    { name: 'math_city', language: 'Dart', pushed_at: '2026-06-24', has_pages: false, description: 'Math Dash — Spin, solve, level up — free, open-source, no ads ever' },
+    { name: 'chess_mind_ai', language: 'Python', pushed_at: '2026-06-06', has_pages: false, description: '' },
+    { name: 'photo-date-updater', language: 'Python', pushed_at: '2025-08-06', has_pages: false, description: '' },
+    { name: 'macos-utils', language: '', pushed_at: '2025-08-06', has_pages: false, description: '' },
+    { name: 'afterlife-ai', language: 'Jupyter Notebook', pushed_at: '2025-06-15', has_pages: false, description: "Voice chat bot that mimics someone's personality even after they're gone from this world. =P" },
+    { name: 'augmented-reality-rugs', language: 'Python', pushed_at: '2023-10-22', has_pages: false, description: 'Generate and view augmented reality rugs in your house using a mobile device.' },
+    { name: 'skiing', language: '', pushed_at: '2019-01-07', has_pages: false, description: '' },
+  ];
+
+  function esc(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
+  function titleOf(repo) {
+    if (TITLES[repo.name]) return TITLES[repo.name];
+    return repo.name.replace(/[-_]/g, ' ');
+  }
+
+  function descOf(repo) {
+    return repo.description || DESCRIPTIONS[repo.name] || '';
+  }
+
+  function demoUrlOf(repo) {
+    if (DEMO_OVERRIDES[repo.name]) return DEMO_OVERRIDES[repo.name];
+    if (repo.has_pages) return SITE + repo.name + '/';
+    return null;
+  }
+
+  function langHtml(repo) {
+    if (!repo.language) return '';
+    var dot = LANG_DOTS[repo.language] || '';
+    return '<span class="lang"' + (dot ? ' style="--dot:' + dot + '"' : '') + '>' +
+      esc(repo.language) + '</span>';
+  }
+
+  function render(repos) {
+    var list = repos.filter(function (r) {
+      return !EXCLUDE[r.name] && !r.fork && !r.archived;
+    });
+    list.sort(function (a, b) {
+      var ap = PINNED_FIRST.indexOf(a.name); if (ap < 0) ap = 99;
+      var bp = PINNED_FIRST.indexOf(b.name); if (bp < 0) bp = 99;
+      if (ap !== bp) return ap - bp;
+      return (b.pushed_at || '').localeCompare(a.pushed_at || '');
+    });
+
+    var demosHtml = '';
+    var othersHtml = '';
+    list.forEach(function (repo) {
+      var repoUrl = 'https://github.com/' + USER + '/' + repo.name;
+      var demo = demoUrlOf(repo);
+      if (demo) {
+        demosHtml +=
+          '<div class="card">' +
+          '<h3>' + esc(titleOf(repo)) + '</h3>' +
+          '<p>' + esc(descOf(repo)) + '</p>' +
+          '<div class="row">' +
+          '<a class="btn" href="' + esc(demo) + '">▶ Live demo</a>' +
+          '<a class="src" href="' + esc(repoUrl) + '">Source</a>' +
+          langHtml(repo) +
+          '</div></div>';
+      } else {
+        var year = (repo.pushed_at || '').slice(0, 4);
+        var desc = descOf(repo);
+        othersHtml +=
+          '<div class="card">' +
+          '<div class="meta-row"><h3><a href="' + esc(repoUrl) + '">' + esc(titleOf(repo)) + '</a></h3>' +
+          (year ? '<span class="year">' + esc(year) + '</span>' : '') + '</div>' +
+          (desc ? '<p>' + esc(desc) + '</p>' : '<p></p>') +
+          '<div class="row">' + langHtml(repo) + '</div>' +
+          '</div>';
+      }
+    });
+    document.getElementById('demos').innerHTML = demosHtml;
+    document.getElementById('others').innerHTML = othersHtml;
+  }
+
+  render(FALLBACK);
+
+  fetch('https://api.github.com/users/' + USER + '/repos?per_page=100&sort=pushed')
+    .then(function (res) {
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      return res.json();
+    })
+    .then(function (repos) {
+      if (Array.isArray(repos) && repos.length) render(repos);
+    })
+    .catch(function () {
+      document.getElementById('note').textContent =
+        'Live repository list unavailable right now — showing a recent snapshot.';
+    });
+})();
+</script>
 </body>
 </html>
