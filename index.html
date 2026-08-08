@@ -155,7 +155,23 @@
   var LANG_DOTS = {
     JavaScript: '#f1e05a', Python: '#3572a5', Dart: '#00b4ab',
     'Jupyter Notebook': '#da5b0b', HTML: '#e34c26', Swift: '#f05138',
+    TypeScript: '#3178c6',
   };
+
+  // Demos deployed into this site from private repos: the GitHub API can't
+  // list them, so they are declared here. `no_source` hides the Source link.
+  var PRIVATE_DEMOS = [
+    {
+      name: 'gymi-leitstern',
+      language: 'TypeScript',
+      pushed_at: '2026-08-07',
+      has_pages: false,
+      no_source: true,
+      description: 'Adaptive German practice for Zürich Gymi prep, played across a night sky: animal constellations whose stars brighten as mastery grows. Runs fully in the browser — no account needed.',
+    },
+  ];
+  DEMO_OVERRIDES['gymi-leitstern'] = SITE + 'leitstern/';
+  TITLES['gymi-leitstern'] = 'Gymi Leitstern';
 
   // Snapshot fallback in case the GitHub API is unreachable or rate-limited.
   var FALLBACK = [
@@ -195,9 +211,9 @@
   }
 
   function render(repos) {
-    var list = repos.filter(function (r) {
+    var list = PRIVATE_DEMOS.concat(repos.filter(function (r) {
       return !EXCLUDE[r.name] && !r.fork && !r.archived;
-    });
+    }));
     list.sort(function (a, b) {
       var ap = PINNED_FIRST.indexOf(a.name); if (ap < 0) ap = 99;
       var bp = PINNED_FIRST.indexOf(b.name); if (bp < 0) bp = 99;
@@ -217,7 +233,7 @@
           '<p>' + esc(descOf(repo)) + '</p>' +
           '<div class="row">' +
           '<a class="btn" href="' + esc(demo) + '">▶ Live demo</a>' +
-          '<a class="src" href="' + esc(repoUrl) + '">Source</a>' +
+          (repo.no_source ? '' : '<a class="src" href="' + esc(repoUrl) + '">Source</a>') +
           langHtml(repo) +
           '</div></div>';
       } else {
