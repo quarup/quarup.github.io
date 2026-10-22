@@ -43,7 +43,7 @@
       font-size: 17px;
       line-height: 1.5;
     }
-    img { max-width: 100%; display: block; }
+    img { max-width: 100%; height: auto; display: block; }
     main { max-width: 760px; margin: 0 auto; padding: 32px 16px 48px; }
     header.hero { margin-bottom: 8px; display: flex; align-items: center; gap: 18px; }
     .avatar { width: 96px; height: 96px; border-radius: 16px; border: 1px solid var(--border); flex-shrink: 0; }
@@ -88,6 +88,15 @@
     }
     .src:hover { border-color: var(--accent); }
     .lang { color: var(--muted); font-size: 0.85rem; white-space: nowrap; }
+    .plat {
+      color: var(--ink-2);
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 3px 10px;
+    }
+    .plat + .plat { margin-left: -4px; }
     .lang::before {
       content: "";
       display: inline-block;
@@ -155,7 +164,7 @@
       <div class="row">
         <a class="btn" href="https://quarup.github.io/math_city/">Website</a>
         <a class="src" href="https://github.com/quarup/math_city">Source</a>
-        <span class="lang" style="--dot:#00b4ab">Dart</span>
+        <span class="plat">iOS</span><span class="plat">Android</span>
       </div>
     </div>
   </div>
