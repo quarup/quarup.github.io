@@ -4,7 +4,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Quarup · Projects</title>
-  <meta name="description" content="Public projects by Quarup — live demos and source code.">
+  <meta name="description" content="Things Quarup builds for fun: Math City, a math game for kids; German practice apps for Gymi prep; augmented-reality rugs; a prompt-configurable chess opponent.">
+  <meta property="og:title" content="Quarup · Projects">
+  <meta property="og:description" content="Things I build for fun: Math City, Gymi Leitstern, Gymi Fehlerwörter, Augmented Reality Rugs, ChessMind AI.">
+  <meta property="og:image" content="https://quarup.github.io/img/city_day.jpg">
+  <meta name="theme-color" content="#f9f9f7">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🛠️</text></svg>">
   <style>
     :root {
@@ -39,15 +43,10 @@
       font-size: 17px;
       line-height: 1.5;
     }
+    img { max-width: 100%; display: block; }
     main { max-width: 760px; margin: 0 auto; padding: 32px 16px 48px; }
     header.hero { margin-bottom: 8px; display: flex; align-items: center; gap: 18px; }
-    .avatar {
-      width: 96px;
-      height: 96px;
-      border-radius: 16px;
-      border: 1px solid var(--border);
-      flex-shrink: 0;
-    }
+    .avatar { width: 96px; height: 96px; border-radius: 16px; border: 1px solid var(--border); flex-shrink: 0; }
     h1 { margin: 0; font-size: 1.9rem; }
     .sub { color: var(--ink-2); margin: 4px 0 0; }
     .sub a { color: var(--accent); text-decoration: none; }
@@ -63,11 +62,12 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 18px 20px;
       margin: 12px 0;
+      overflow: hidden;
     }
+    .card .in { padding: 16px 20px 18px; }
     .card h3 { margin: 0 0 4px; font-size: 1.2rem; }
-    .card p { margin: 4px 0 10px; color: var(--ink-2); }
+    .card p { margin: 4px 0 12px; color: var(--ink-2); }
     .row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
     .btn {
       display: inline-block;
@@ -97,14 +97,35 @@
       background: var(--dot, var(--muted));
       margin-right: 5px;
     }
+    /* Featured app: pictures on the sky, text beside them. */
+    .feature { display: grid; grid-template-columns: 1fr 1fr; }
+    .feature .pic {
+      background: linear-gradient(180deg, #5db7e8, #8ccbe9 70%, #b9e0bf);
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      align-content: center;
+    }
+    .feature .pic img { border-radius: 8px; border: 4px solid #fff; box-shadow: 0 8px 20px rgba(21, 56, 77, 0.25); }
+    .feature .pic .lockup { border: 0; box-shadow: none; width: 80%; margin: 0 auto 4px; }
+    .feature .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .feature .shots img { border-width: 3px; }
+    /* Browser demos: thumbnail beside the text. */
+    .demo { display: grid; grid-template-columns: 200px 1fr; }
+    .demo img { height: 100%; object-fit: cover; aspect-ratio: 16 / 10; }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
     .grid .card { margin: 0; display: flex; flex-direction: column; }
+    .grid .card .in { flex: 1; display: flex; flex-direction: column; }
     .grid .card p { flex: 1; font-size: 0.95rem; }
     .grid h3 { font-size: 1.05rem; }
     .meta-row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
     .year { color: var(--muted); font-size: 0.85rem; }
-    .note { color: var(--muted); font-size: 0.85rem; margin-top: 28px; }
+    .placeholder { background: #0f1b2a; color: #dfe8f0; aspect-ratio: 16 / 10; display: grid; place-items: center; font-size: 56px; }
     footer { color: var(--muted); font-size: 0.85rem; max-width: 760px; margin: 0 auto; padding: 0 16px 40px; }
+    @media (max-width: 620px) {
+      .feature, .demo { grid-template-columns: 1fr; }
+      .demo img { aspect-ratio: 16 / 9; height: auto; }
+    }
   </style>
 </head>
 <body>
@@ -113,160 +134,95 @@
     <img class="avatar" src="quarup.png" alt="Portrait of Quarup" width="96" height="96">
     <div>
       <h1>Quarup</h1>
-      <p class="sub">Public projects &amp; live demos · <a href="https://github.com/quarup">github.com/quarup</a></p>
+      <p class="sub">Things I build for fun · <a href="https://github.com/quarup">github.com/quarup</a></p>
     </div>
   </header>
 
-  <h2>Live demos</h2>
-  <div id="demos"></div>
+  <h2>Apps</h2>
+  <div class="card feature">
+    <div class="pic">
+      <img class="lockup" src="img/lockup.png" alt="Math City" width="1200" height="333">
+      <img src="img/city_day.jpg" alt="A kid's town by day: a fire station, town hall, school, shops and homes around a loop of roads" width="660" height="530">
+      <div class="shots">
+        <img src="img/q_protractor.jpg" alt="Measuring an angle with a protractor" width="360" height="800">
+        <img src="img/q_fraction.jpg" alt="Equal fractions, with a shaded fraction bar" width="360" height="800">
+        <img src="img/q_scratch.jpg" alt="A word problem with working on a scratch pad" width="360" height="800">
+      </div>
+    </div>
+    <div class="in">
+      <h3>Math City</h3>
+      <p>Build a whole city by solving math problems. A free math game for kids aged 6 to 14, for iPad, iPhone and Android: over 350 skills from kindergarten to grade 8, read-aloud, a scratch pad, several kids per device. No ads, works offline, collects no data. In private beta.</p>
+      <div class="row">
+        <a class="btn" href="https://quarup.github.io/math_city/">Website</a>
+        <a class="src" href="https://github.com/quarup/math_city">Source</a>
+        <span class="lang" style="--dot:#00b4ab">Dart</span>
+      </div>
+    </div>
+  </div>
+
+  <h2>Try in the browser</h2>
+  <div class="card demo">
+    <img src="img/leitstern.jpg" alt="Gymi Leitstern: a reading passage with comprehension questions over a night sky" width="960" height="600" loading="lazy">
+    <div class="in">
+      <h3>Gymi Leitstern</h3>
+      <p>Adaptive German practice for Zürich Gymi prep, played across a night sky: animal constellations whose stars brighten as mastery grows. Runs fully in the browser, no account needed.</p>
+      <div class="row">
+        <a class="btn" href="https://quarup.github.io/leitstern/">Open</a>
+        <span class="lang" style="--dot:#3178c6">TypeScript</span>
+      </div>
+    </div>
+  </div>
+  <div class="card demo">
+    <img src="img/gymi.jpg" alt="Gymi Fehlerwörter: dictation and tricky word pairs" width="960" height="600" loading="lazy">
+    <div class="in">
+      <h3>Gymi Fehlerwörter</h3>
+      <p>German spelling trainer for Gymi prep (Swiss orthography): dictation with text-to-speech, Leitner flashcards, tricky word pairs, and profiles for multiple kids.</p>
+      <div class="row">
+        <a class="btn" href="https://quarup.github.io/gymi_fehlerwoerter/">Open</a>
+        <a class="src" href="https://github.com/quarup/gymi_fehlerwoerter">Source</a>
+        <span class="lang" style="--dot:#f1e05a">JavaScript</span>
+      </div>
+    </div>
+  </div>
+  <div class="card demo">
+    <img src="img/rugs.jpg" alt="A rug photo becomes a 3D model, then appears on a kitchen floor in augmented reality" width="960" height="600" loading="lazy">
+    <div class="in">
+      <h3>Augmented Reality Rugs</h3>
+      <p>Turn a photo of a rug into a 3D model and see it on your own floor through your phone's camera.</p>
+      <div class="row">
+        <a class="btn" href="https://quarup.github.io/rugs/">Open</a>
+        <a class="src" href="https://github.com/quarup/augmented-reality-rugs">Source</a>
+        <span class="lang" style="--dot:#3572a5">Python</span>
+      </div>
+    </div>
+  </div>
 
   <h2>More projects</h2>
-  <div id="others" class="grid"></div>
-
-  <p class="note" id="note"></p>
+  <div class="grid">
+    <div class="card">
+      <div class="placeholder" aria-hidden="true">♞</div>
+      <div class="in">
+        <div class="meta-row"><h3>ChessMind AI</h3><span class="year">2026</span></div>
+        <p>A chess opponent you describe in plain language ("aggressively use your queen") on top of Stockfish. Each bot is a character that chats about the game. Terminal and a small browser app so far; a proper demo is in the works.</p>
+        <div class="row"><a class="src" href="https://github.com/quarup/chess_mind_ai">Source</a><span class="lang" style="--dot:#3572a5">Python</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="in">
+        <div class="meta-row"><h3>Photo Date Updater</h3><span class="year">2025</span></div>
+        <p>macOS script that fixes photo file creation dates to match their EXIF dates.</p>
+        <div class="row"><a class="src" href="https://github.com/quarup/photo-date-updater">Source</a><span class="lang" style="--dot:#3572a5">Python</span></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="in">
+        <div class="meta-row"><h3>Afterlife AI</h3><span class="year">2025</span></div>
+        <p>Voice chat bot that mimics someone's personality even after they're gone from this world. =P</p>
+        <div class="row"><a class="src" href="https://github.com/quarup/afterlife-ai">Source</a><span class="lang" style="--dot:#da5b0b">Jupyter Notebook</span></div>
+      </div>
+    </div>
+  </div>
 </main>
-
-<script>
-(function () {
-  'use strict';
-
-  var USER = 'quarup';
-  var SITE = 'https://quarup.github.io/';
-  // The site repo itself and the profile-README repo are not projects;
-  // macos-utils and skiing are empty repos.
-  var EXCLUDE = { 'quarup.github.io': 1, 'quarup': 1, 'macos-utils': 1, 'skiing': 1 };
-  // Demos not detectable via GitHub Pages (hosted inside this site).
-  var DEMO_OVERRIDES = { 'augmented-reality-rugs': SITE + 'rugs/' };
-  var PINNED_FIRST = ['gymi-leitstern', 'gymi_fehlerwoerter'];
-  var TITLES = {
-    'gymi_fehlerwoerter': 'Gymi Fehlerwörter',
-    'math_city': 'Math Dash',
-    'chess_mind_ai': 'ChessMind AI',
-    'augmented-reality-rugs': 'Augmented Reality Rugs',
-    'afterlife-ai': 'Afterlife AI',
-    'photo-date-updater': 'Photo Date Updater',
-  };
-  // Used when a repo has no description on GitHub.
-  var DESCRIPTIONS = {
-    'gymi_fehlerwoerter': 'German spelling trainer for Gymi prep (Swiss orthography): dictation with text-to-speech, Leitner flashcards, tricky word pairs, and profiles for multiple kids.',
-    'chess_mind_ai': 'Prompt-configurable chess AI on top of Stockfish — describe a playing style in natural language ("aggressively use your queen") and play against it.',
-    'photo-date-updater': 'macOS script that fixes photo file creation dates to match their EXIF dates.',
-  };
-  var LANG_DOTS = {
-    JavaScript: '#f1e05a', Python: '#3572a5', Dart: '#00b4ab',
-    'Jupyter Notebook': '#da5b0b', HTML: '#e34c26', Swift: '#f05138',
-    TypeScript: '#3178c6',
-  };
-
-  // Demos deployed into this site from private repos: the GitHub API can't
-  // list them, so they are declared here. `no_source` hides the Source link.
-  var PRIVATE_DEMOS = [
-    {
-      name: 'gymi-leitstern',
-      language: 'TypeScript',
-      pushed_at: '2026-08-07',
-      has_pages: false,
-      no_source: true,
-      description: 'Adaptive German practice for Zürich Gymi prep, played across a night sky: animal constellations whose stars brighten as mastery grows. Runs fully in the browser — no account needed.',
-    },
-  ];
-  DEMO_OVERRIDES['gymi-leitstern'] = SITE + 'leitstern/';
-  TITLES['gymi-leitstern'] = 'Gymi Leitstern';
-
-  // Snapshot fallback in case the GitHub API is unreachable or rate-limited.
-  var FALLBACK = [
-    { name: 'gymi_fehlerwoerter', language: 'JavaScript', pushed_at: '2026-08-02', has_pages: true, description: '' },
-    { name: 'math_city', language: 'Dart', pushed_at: '2026-06-24', has_pages: false, description: 'Math Dash — Spin, solve, level up — free, open-source, no ads ever' },
-    { name: 'chess_mind_ai', language: 'Python', pushed_at: '2026-06-06', has_pages: false, description: '' },
-    { name: 'photo-date-updater', language: 'Python', pushed_at: '2025-08-06', has_pages: false, description: '' },
-    { name: 'afterlife-ai', language: 'Jupyter Notebook', pushed_at: '2025-06-15', has_pages: false, description: "Voice chat bot that mimics someone's personality even after they're gone from this world. =P" },
-    { name: 'augmented-reality-rugs', language: 'Python', pushed_at: '2023-10-22', has_pages: false, description: 'Generate and view augmented reality rugs in your house using a mobile device.' },
-  ];
-
-  function esc(s) {
-    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-  }
-
-  function titleOf(repo) {
-    if (TITLES[repo.name]) return TITLES[repo.name];
-    return repo.name.replace(/[-_]/g, ' ');
-  }
-
-  function descOf(repo) {
-    return repo.description || DESCRIPTIONS[repo.name] || '';
-  }
-
-  function demoUrlOf(repo) {
-    if (DEMO_OVERRIDES[repo.name]) return DEMO_OVERRIDES[repo.name];
-    if (repo.has_pages) return SITE + repo.name + '/';
-    return null;
-  }
-
-  function langHtml(repo) {
-    if (!repo.language) return '';
-    var dot = LANG_DOTS[repo.language] || '';
-    return '<span class="lang"' + (dot ? ' style="--dot:' + dot + '"' : '') + '>' +
-      esc(repo.language) + '</span>';
-  }
-
-  function render(repos) {
-    var list = PRIVATE_DEMOS.concat(repos.filter(function (r) {
-      return !EXCLUDE[r.name] && !r.fork && !r.archived;
-    }));
-    list.sort(function (a, b) {
-      var ap = PINNED_FIRST.indexOf(a.name); if (ap < 0) ap = 99;
-      var bp = PINNED_FIRST.indexOf(b.name); if (bp < 0) bp = 99;
-      if (ap !== bp) return ap - bp;
-      return (b.pushed_at || '').localeCompare(a.pushed_at || '');
-    });
-
-    var demosHtml = '';
-    var othersHtml = '';
-    list.forEach(function (repo) {
-      var repoUrl = 'https://github.com/' + USER + '/' + repo.name;
-      var demo = demoUrlOf(repo);
-      if (demo) {
-        demosHtml +=
-          '<div class="card">' +
-          '<h3>' + esc(titleOf(repo)) + '</h3>' +
-          '<p>' + esc(descOf(repo)) + '</p>' +
-          '<div class="row">' +
-          '<a class="btn" href="' + esc(demo) + '">▶ Live demo</a>' +
-          (repo.no_source ? '' : '<a class="src" href="' + esc(repoUrl) + '">Source</a>') +
-          langHtml(repo) +
-          '</div></div>';
-      } else {
-        var year = (repo.pushed_at || '').slice(0, 4);
-        var desc = descOf(repo);
-        othersHtml +=
-          '<div class="card">' +
-          '<div class="meta-row"><h3>' + esc(titleOf(repo)) + '</h3>' +
-          (year ? '<span class="year">' + esc(year) + '</span>' : '') + '</div>' +
-          (desc ? '<p>' + esc(desc) + '</p>' : '<p></p>') +
-          '<div class="row"><a class="src" href="' + esc(repoUrl) + '">Source</a>' + langHtml(repo) + '</div>' +
-          '</div>';
-      }
-    });
-    document.getElementById('demos').innerHTML = demosHtml;
-    document.getElementById('others').innerHTML = othersHtml;
-  }
-
-  render(FALLBACK);
-
-  fetch('https://api.github.com/users/' + USER + '/repos?per_page=100&sort=pushed')
-    .then(function (res) {
-      if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.json();
-    })
-    .then(function (repos) {
-      if (Array.isArray(repos) && repos.length) render(repos);
-    })
-    .catch(function () {
-      document.getElementById('note').textContent =
-        'Live repository list unavailable right now — showing a recent snapshot.';
-    });
-})();
-</script>
+<footer>© 2026 Quarup Barreirinhas</footer>
 </body>
 </html>
