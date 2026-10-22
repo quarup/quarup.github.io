@@ -120,8 +120,8 @@
     .feature .shots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
     .feature .shots img { border-width: 3px; }
     /* Browser demos: thumbnail beside the text. */
-    .demo { display: grid; grid-template-columns: 200px 1fr; }
-    .demo img { height: 100%; object-fit: cover; aspect-ratio: 16 / 10; }
+    .demo { display: grid; grid-template-columns: 220px 1fr; align-items: center; }
+    .demo img { width: calc(100% - 16px); margin: 16px 0 16px 16px; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); }
     .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
     .grid .card { margin: 0; display: flex; flex-direction: column; }
     .grid .card .in { flex: 1; display: flex; flex-direction: column; }
@@ -133,7 +133,7 @@
     footer { color: var(--muted); font-size: 0.85rem; max-width: 760px; margin: 0 auto; padding: 0 16px 40px; }
     @media (max-width: 620px) {
       .feature, .demo { grid-template-columns: 1fr; }
-      .demo img { aspect-ratio: 16 / 9; height: auto; }
+      .demo img { width: calc(100% - 32px); margin: 16px 16px 0; }
     }
   </style>
 </head>
