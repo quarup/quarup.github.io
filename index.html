@@ -135,6 +135,10 @@
       .feature, .demo { grid-template-columns: 1fr; }
       .demo img { width: calc(100% - 32px); margin: 16px 16px 0; }
     }
+    .lb{position:fixed;inset:0;background:rgba(10,14,20,.88);display:grid;place-items:center;padding:24px;z-index:50;cursor:zoom-out}
+    .lb img{max-width:min(96vw,1400px);max-height:92vh;width:auto;height:auto;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+    img.zoom{cursor:zoom-in}
+    img.zoom:focus-visible{outline:3px solid #f0a21b;outline-offset:3px}
   </style>
 </head>
 <body>
@@ -151,11 +155,11 @@
   <div class="card feature">
     <div class="pic">
       <img class="lockup" src="img/lockup.png" alt="Math City" width="1200" height="333">
-      <img src="img/city_day.jpg" alt="A kid's town by day: a fire station, town hall, school, shops and homes around a loop of roads" width="660" height="530">
+      <img class="zoom" data-full="img/full/city_day.jpg" src="img/city_day.jpg" alt="A kid's town by day: a fire station, town hall, school, shops and homes around a loop of roads" width="660" height="530">
       <div class="shots">
-        <img src="img/q_protractor.jpg" alt="Measuring an angle with a protractor" width="360" height="800">
-        <img src="img/q_fraction.jpg" alt="Equal fractions, with a shaded fraction bar" width="360" height="800">
-        <img src="img/q_scratch.jpg" alt="A word problem with working on a scratch pad" width="360" height="800">
+        <img class="zoom" data-full="img/full/q_protractor.jpg" src="img/q_protractor.jpg" alt="Measuring an angle with a protractor" width="360" height="800">
+        <img class="zoom" data-full="img/full/q_fraction.jpg" src="img/q_fraction.jpg" alt="Equal fractions, with a shaded fraction bar" width="360" height="800">
+        <img class="zoom" data-full="img/full/q_scratchpad.jpg" src="img/q_scratch.jpg" alt="A word problem with working on a scratch pad" width="360" height="800">
       </div>
     </div>
     <div class="in">
@@ -172,7 +176,7 @@
 
   <h2>Try in the browser</h2>
   <div class="card demo">
-    <img src="img/leitstern.jpg" alt="Gymi Leitstern: a reading passage with comprehension questions over a night sky" width="960" height="600" loading="lazy">
+    <img class="zoom" src="img/leitstern.jpg" alt="Gymi Leitstern: a reading passage with comprehension questions over a night sky" width="960" height="600" loading="lazy">
     <div class="in">
       <h3>Gymi Leitstern</h3>
       <p>Adaptive German practice for Zürich Gymi prep, played across a night sky: animal constellations whose stars brighten as mastery grows. Runs fully in the browser, no account needed.</p>
@@ -183,7 +187,7 @@
     </div>
   </div>
   <div class="card demo">
-    <img src="img/gymi.jpg" alt="Gymi Fehlerwörter: dictation and tricky word pairs" width="960" height="600" loading="lazy">
+    <img class="zoom" src="img/gymi.jpg" alt="Gymi Fehlerwörter: dictation and tricky word pairs" width="960" height="600" loading="lazy">
     <div class="in">
       <h3>Gymi Fehlerwörter</h3>
       <p>German spelling trainer for Gymi prep (Swiss orthography): dictation with text-to-speech, Leitner flashcards, tricky word pairs, and profiles for multiple kids.</p>
@@ -195,7 +199,7 @@
     </div>
   </div>
   <div class="card demo">
-    <img src="img/rugs.jpg" alt="A rug photo becomes a 3D model, then appears on a kitchen floor in augmented reality" width="960" height="600" loading="lazy">
+    <img class="zoom" src="img/rugs.jpg" alt="A rug photo becomes a 3D model, then appears on a kitchen floor in augmented reality" width="960" height="600" loading="lazy">
     <div class="in">
       <h3>Augmented Reality Rugs</h3>
       <p>Turn a photo of a rug into a 3D model and see it on your own floor through your phone's camera.</p>
@@ -234,5 +238,20 @@
   </div>
 </main>
 <footer>© 2026 Quarup Barreirinhas</footer>
+<div class="lb" id="lb" hidden><img alt=""></div>
+<script>
+(function(){
+  var lb=document.getElementById('lb'), im=lb.querySelector('img');
+  function open(el){im.src=el.dataset.full||el.currentSrc||el.src;im.alt=el.alt||'';lb.hidden=false;document.body.style.overflow='hidden';}
+  function close(){lb.hidden=true;im.removeAttribute('src');document.body.style.overflow='';}
+  document.querySelectorAll('img.zoom').forEach(function(el){
+    el.setAttribute('tabindex','0'); el.setAttribute('role','button');
+    el.addEventListener('click',function(){open(el);});
+    el.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();open(el);}});
+  });
+  lb.addEventListener('click',close);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&!lb.hidden)close();});
+})();
+</script>
 </body>
 </html>
